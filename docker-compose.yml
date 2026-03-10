@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: todoapp
+      POSTGRES_PASSWORD: todoapp
+      POSTGRES_DB: todoapp
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todoapp -d todoapp"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  dev:
+    image: node:24-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: "postgresql://todoapp:todoapp@postgres:5432/todoapp?schema=public"
+      DATABASE_URL_DIRECT: "postgresql://todoapp:todoapp@postgres:5432/todoapp?schema=public"
+    env_file:
+      - .env.local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3001/ || exit 1"]
+      interval: 3s
+      timeout: 10s
+      retries: 40
+      start_period: 5s
+    entrypoint: ["/app/bin/docker-entrypoint.sh"]
+    command: npx next dev --turbopack --hostname 0.0.0.0 --port 3001
+
+  dev-test:
+    profiles: [test]
+    image: node:24-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - next_test_cache:/app/.next
+    ports:
+      - "4001:4001"
+    environment:
+      DATABASE_URL: "postgresql://todoapp:todoapp@postgres:5432/todoapp_test?schema=public"
+      DATABASE_URL_DIRECT: "postgresql://todoapp:todoapp@postgres:5432/todoapp_test?schema=public"
+      NEXTAUTH_URL: "http://localhost:4001"
+    env_file:
+      - .env.local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4001/ || exit 1"]
+      interval: 3s
+      timeout: 10s
+      retries: 40
+      start_period: 5s
+    entrypoint: ["/app/bin/docker-entrypoint.sh"]
+    command: npx next dev --turbopack --hostname 0.0.0.0 --port 4001
+
+volumes:
+  node_modules:
+    name: outside-in-tdd-starter_node_modules
+  next_test_cache:
+  pgdata:

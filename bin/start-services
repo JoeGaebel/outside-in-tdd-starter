@@ -1,0 +1,52 @@
+#!/bin/bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+dc() { "$SCRIPT_DIR/dc" "$@"; }
+
+# 1. Start containers if any required service isn't running
+running_services=$(dc ps --status running --format '{{.Service}}' 2>/dev/null || true)
+need_start=false
+
+for svc in dev postgres; do
+  if ! echo "$running_services" | grep -q "^${svc}$"; then
+    need_start=true
+    break
+  fi
+done
+
+if [ "$need_start" = true ]; then
+  echo "Starting Docker containers..."
+  dc up -d
+fi
+
+# 2. Wait for postgres healthcheck
+echo "Waiting for postgres..."
+until dc ps postgres --format '{{.Health}}' 2>/dev/null | grep -q "healthy"; do
+  sleep 1
+done
+
+# 3. Run migrations
+npm run prisma:migrate:deploy 2>&1 | tail -1
+
+# 4. Regenerate Prisma client
+npm run prisma:generate 2>&1 | tail -1
+
+# 5. Ensure test database exists
+TEST_DB_NAME="todoapp_test"
+TEST_DATABASE_URL="postgresql://todoapp:todoapp@localhost:5433/${TEST_DB_NAME}?schema=public"
+
+db_exists=$(dc exec -T postgres psql -U todoapp -d postgres -tAc \
+  "SELECT 1 FROM pg_database WHERE datname='${TEST_DB_NAME}'" 2>/dev/null || true)
+if [ "$db_exists" != "1" ]; then
+  echo "Creating test database ($TEST_DB_NAME)..."
+  dc exec -T postgres psql -U todoapp -d postgres \
+    -c "CREATE DATABASE \"${TEST_DB_NAME}\" OWNER todoapp;"
+fi
+DATABASE_URL="$TEST_DATABASE_URL" DATABASE_URL_DIRECT="$TEST_DATABASE_URL" npm run prisma:migrate:deploy 2>&1 | tail -1
+
+# 6. Wait for dev server to be healthy
+echo "Waiting for dev server..."
+dc up -d --wait dev
+
+echo "All services ready → http://localhost:3001"

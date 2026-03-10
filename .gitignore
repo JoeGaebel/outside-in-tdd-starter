@@ -1,0 +1,41 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+reports/
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+.idea
+.swc
+
+# debug
+npm-debug.log*
+
+# env files
+.env*.local
+
+# prisma
+prisma/generated/
+
+# test runner logs
+logs/
+
+# stryker
+.stryker-tmp/
+.stryker-incremental.json
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
