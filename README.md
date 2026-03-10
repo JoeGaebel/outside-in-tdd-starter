@@ -20,8 +20,7 @@ This repo serves two purposes:
 ```bash
 git clone <repo-url> && cd outside-in-tdd-starter
 npm install
-./bin/start-services        # starts Docker containers, runs migrations, waits for health checks
-./t                         # runs lint, typecheck, unit tests, and E2E tests
+npm run dev                 # starts Docker containers, runs migrations, waits for health checks
 ```
 
 Services will be running at:

@@ -6,7 +6,7 @@
     "node": "24.x"
   },
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "./bin/start-services",
     "build": "next build",
     "start": "next start",
     "lint": "oxlint . -c oxlintrc.json && node bin/lint-test-patterns.mjs",
