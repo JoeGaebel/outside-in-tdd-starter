@@ -21,6 +21,7 @@ This repo serves two purposes:
 git clone <repo-url> && cd outside-in-tdd-starter
 npm install
 npm run dev                 # starts Docker containers, runs migrations, waits for health checks
+./bin/stop-services         # stops all Docker containers
 ```
 
 Services will be running at:

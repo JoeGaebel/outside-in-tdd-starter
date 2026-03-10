@@ -1,0 +1,10 @@
+#!/bin/bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+dc() { "$SCRIPT_DIR/dc" "$@"; }
+
+echo "Stopping Docker containers..."
+dc down
+
+echo "All services stopped."
