@@ -36,7 +36,10 @@ Services will be running at:
 Open Claude Code in the project directory and ask it to implement a feature:
 
 ```
-implement the ability to add a new todo item
+We're going to implement dark mode / light mode toggle button.
+When it's clicked, it should toggle all font colours and backgrounds of components and the whole page to
+dark mode and to light mode. Let's ensure also that the dark and light mode applies to the whole app.
+Make it a floating button on the top right of the page. Use a nice sun and moon icon that changes colour appropriately.
 ```
 
 The `outside-in-tdd` skill triggers automatically for feature requests. Claude will plan, write a failing E2E test, then cycle through RED-GREEN-REFACTOR for each layer until the feature is complete.
