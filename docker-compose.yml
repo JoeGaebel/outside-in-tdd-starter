@@ -27,7 +27,7 @@ services:
       DATABASE_URL: "postgresql://todoapp:todoapp@postgres:5432/todoapp?schema=public"
       DATABASE_URL_DIRECT: "postgresql://todoapp:todoapp@postgres:5432/todoapp?schema=public"
     env_file:
-      - .env.local
+      - .env
     depends_on:
       postgres:
         condition: service_healthy
@@ -55,7 +55,7 @@ services:
       DATABASE_URL_DIRECT: "postgresql://todoapp:todoapp@postgres:5432/todoapp_test?schema=public"
       NEXTAUTH_URL: "http://localhost:4001"
     env_file:
-      - .env.local
+      - .env
     depends_on:
       postgres:
         condition: service_healthy

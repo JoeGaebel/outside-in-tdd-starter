@@ -3,5 +3,5 @@ set -euo pipefail
 
 exec docker compose \
   -f docker-compose.yml \
-  --env-file .env.local \
+  --env-file .env \
   "$@"

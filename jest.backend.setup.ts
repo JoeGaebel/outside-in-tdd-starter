@@ -1,7 +1,7 @@
 import { server } from './test/mocks/server'
 import dotenv from 'dotenv';
 
-dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '.env' });
 
 // Mock the cached-prisma-client to use jestPrisma's transactional client
 jest.mock('@/lib/cached-prisma-client', () => ({

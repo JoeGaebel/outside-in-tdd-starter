@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 
 configure({ asyncUtilTimeout: 5000 });
 
-dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '.env' });
 
 global.mswServer = setupServer();
 
