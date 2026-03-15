@@ -2,6 +2,12 @@
   "name": "outside-in-tdd-starter",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "Joe Gaebel",
+    "email": "joe@joegaebel.com",
+    "url": "https://joegaebel.com"
+  },
+  "license": "Apache-2.0",
   "engines": {
     "node": "24.x"
   },
